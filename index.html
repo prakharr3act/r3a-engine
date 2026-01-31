@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>R3A Secure Language Engine</title>
+
+<meta name="description" content="R3A Secure Language Engine is a local-only encryption system with integrity checks, versioned signatures, and tamper-proof data protection for developers.">
+<meta name="keywords" content="R3A, encryption engine, secure text, local encryption, cryptography, developer tools">
+<meta name="author" content="Prakhar Patel">
+<meta name="robots" content="index, follow">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="R3A Secure Language Engine">
+<meta property="og:description" content="Local-only encrypted language runtime with integrity checks and tamper-proof data protection.">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="R3A Secure Language Engine">
+<meta name="twitter:description" content="Local-first encryption engine with versioned signatures and integrity validation.">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body id="app">
+
+<div class="loader" id="loader">
+  <div class="spinner"></div>
+</div>
+
+<div class="sidebar" id="sidebar">
+  <div class="logo">R3A<span>ENGINE</span></div>
+  <div class="nav">
+    <button class="active" onclick="openTab('home',this)">Home</button>
+    <button onclick="openTab('encrypt',this)">Encrypt</button>
+    <button onclick="openTab('decrypt',this)">Decrypt</button>
+    <button onclick="openTab('docs',this)">Docs</button>
+    <button onclick="openTab('about',this)">About</button>
+  </div>
+<!-- <button class="theme" onclick="toggleTheme()">Toggle Theme</button>--> 
+  <footer>
+    <div class="footer-timer" id="footer-timer">00:00:00</div>
+  </footer>
+</div>
+
+<div class="content">
+  <button class="menu-btn ghost" onclick="toggleMenu()">☰ Menu</button>
+
+  <section id="home" class="section active">
+    <div class="hero">
+      <h1>R3A Secure Language Engine</h1>
+      <p>Local-only encrypted language runtime with integrity checks, versioned signatures, and tamper-proof data protection. Ideal for developers who need reliable encryption with simple key management.</p>
+    </div>
+  </section>
+
+  <section id="encrypt" class="section">
+    <div class="card">
+      <h2>Encrypt Your Text</h2>
+      <div class="grid">
+        <div>
+          <textarea id="plain" placeholder="Enter text here..."></textarea>
+          <input id="key" placeholder="Secret Key" oninput="checkStrength(this.value)">
+          <div id="strength" class="meter"><div></div></div>
+          <div class="actions">
+            <button class="main" onclick="encrypt()">Encrypt</button>
+            <button class="ghost" onclick="safeCopy('encrypted')">Copy</button>
+            <button class="ghost" onclick="downloadText()">Download .r3a</button>
+          </div>
+        </div>
+        <div>
+          <textarea id="encrypted" placeholder="Encrypted R3A Output"></textarea>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="decrypt" class="section">
+    <div class="card">
+      <h2>Decrypt Your Text</h2>
+      <textarea id="cipher" placeholder="R3A Code"></textarea>
+      <input id="dkey" placeholder="Secret Key">
+      <div class="actions">
+        <button class="main" onclick="decrypt()">Decrypt</button>
+        <button class="ghost" onclick="safeCopy('decrypted')">Copy</button>
+      </div>
+      <textarea id="decrypted" placeholder="Plain Text"></textarea>
+    </div>
+  </section>
+
+  <section id="docs" class="section">
+    <div class="card">
+      <h1>R3A Documentation</h1>
+      <p style="color:var(--muted)">Learn how R3A engine works internally.</p>
+
+      <div class="block">
+        <h2>1. Protocol Format</h2>
+        <p>Versioned structure ensures valid decryption and prevents tampering.</p>
+        <pre style="background:var(--code1)"><code>R3A|v1|checksum|payload</code></pre>
+        <p>R3A = signature, v1 = version, checksum = integrity, payload = Base64 encrypted.</p>
+      </div>
+
+      <div class="block">
+        <h2>2. Hash Function</h2>
+        <p>Generates a hash for key derivation and integrity check.</p>
+        <pre style="background:var(--code2)"><code>function hash(str){
+  let h = 0;
+  for(let i=0;i<str.length;i++){
+    h = (h << 5) - h + str.charCodeAt(i);
+  }
+  return Math.abs(h).toString(36);
+}</code></pre>
+      </div>
+
+      <div class="block">
+        <h2>3. Encryption Logic</h2>
+        <p>Shifts each character with the secret key and Base64 encodes.</p>
+        <pre style="background:var(--code3)"><code>function mix(text,key){
+  let r = '';
+  for(let i=0;i<text.length;i++){
+    r += String.fromCharCode(text.charCodeAt(i) + (key.charCodeAt(i % key.length) % 17));
+  }
+  return btoa(r);
+}</code></pre>
+      </div>
+
+      <div class="block">
+        <h2>4. Decryption Logic</h2>
+        <p>Reverse encryption; validates signature and checksum.</p>
+        <pre style="background:var(--code2)"><code>function unmix(data,key){
+  let d = atob(data), r = '';
+  for(let i=0;i<d.length;i++){
+    r += String.fromCharCode(d.charCodeAt(i) - (key.charCodeAt(i % key.length) % 17));
+  }
+  return r;
+}</code></pre>
+      </div>
+
+      <div class="block">
+        <h2>5. Signature & Tamper Protection</h2>
+        <pre style="background:var(--code1)"><code>if(!cipher.startsWith('R3A|')) throw Error();
+if(hash(payload+key) !== checksum) throw Error();</code></pre>
+      </div>
+
+      <div class="block">
+        <h2>6. Key Strength Detection</h2>
+        <pre style="background:var(--code3)"><code>if(key.length < 6 || /(.)\1{2,}/.test(key)) strength='weak';
+else if(key.length < 10) strength='medium';
+else strength='strong';</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section id="about" class="section">
+    <div class="card">
+      <h1>About R3A</h1>
+      <p>R3A is a lightweight encryption engine designed to secure text locally. It uses a simple shift cipher combined with Base64 encoding and versioned signatures to prevent tampering.</p>  
+    </div>
+  </section>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

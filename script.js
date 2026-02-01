@@ -1,69 +1,114 @@
-function openTab(id,el){
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
-  el.classList.add('active');
-  toggleMenu(false);
-}
-function toggleTheme(){app.classList.toggle('light');}
-function toggleMenu(force){
-  if(force===false) sidebar.classList.remove('show');
-  else sidebar.classList.toggle('show');
-}
-function hash(str){
-  let h=0;for(let i=0;i<str.length;i++) h=(h<<5)-h+str.charCodeAt(i);
-  return Math.abs(h).toString(36);
-}
-function mix(t,k){
-  let s='';for(let i=0;i<t.length;i++) s+=String.fromCharCode(t.charCodeAt(i)+(k.charCodeAt(i%k.length)%17));
-  return btoa(s);
-}
-function unmix(t,k){
-  let r=atob(t),s='';for(let i=0;i<r.length;i++) s+=String.fromCharCode(r.charCodeAt(i)-(k.charCodeAt(i%k.length)%17));
-  return s;
-}
-function encrypt(){
-  if(!plain.value||!key.value) return alert('Missing input');
-  let payload = mix(plain.value,key.value);
-  let sum = hash(payload+key.value);
-  encrypted.value = `R3A|v1|${sum}|${payload}`;
-}
-function decrypt(){
-  try{
-    if(!cipher.value.startsWith('R3A|')) throw 0;
-    let [,v,sum,p] = cipher.value.split('|');
-    if(v!=='v1'||hash(p+dkey.value)!==sum) throw 0;
-    decrypted.value = unmix(p,dkey.value);
-  }catch{
-    alert('Invalid R3A data or key');
-  }
-}
-function safeCopy(id){
-  let el=document.getElementById(id);el.select();
-  try{document.execCommand('copy');}catch{alert('Copy blocked');}
-}
-function downloadText(){
-  let b=new Blob([encrypted.value],{type:'application/octet-stream'});
-  let a=document.createElement('a');a.href=URL.createObjectURL(b);
-  a.download='encrypted.r3a';a.click();
-}
-function checkStrength(v){
-  strength.className='meter';
-  if(v.length<6||/(.)\1{2,}/.test(v)) strength.classList.add('weak');
-  else if(v.length<10) strength.classList.add('medium');
-  else strength.classList.add('strong');
+"use strict";
+
+const state = {
+    app: document.getElementById('app'),
+    loader: document.getElementById('loader'),
+    sidebar: document.getElementById('sidebar'),
+    timer: document.getElementById('footer-timer')
+};
+
+function openTab(id, el) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    if (window.innerWidth <= 1024) toggleMenu(false);
+    window.scrollTo(0, 0);
 }
 
-function updateTimer(){
-  let t=new Date();
-  let h=t.getHours().toString().padStart(2,'0');
-  let m=t.getMinutes().toString().padStart(2,'0');
-  let s=t.getSeconds().toString().padStart(2,'0');
-  document.getElementById('footer-timer').textContent=`${h}:${m}:${s}`;
+function toggleMenu(force) {
+    if (force === false) state.sidebar.classList.remove('show');
+    else state.sidebar.classList.toggle('show');
 }
-setInterval(updateTimer,1000); updateTimer();
 
-window.addEventListener('load',()=>{
-  document.getElementById('loader').style.opacity='0';
-  setTimeout(()=>document.getElementById('loader').style.display='none',300);
+const R3A_Engine = {
+    hash: (str) => {
+        let h = 0;
+        for (let i = 0; i < str.length; i++) h = (h << 5) - h + str.charCodeAt(i);
+        return Math.abs(h).toString(36);
+    },
+    mix: (t, k) => {
+        let s = '';
+        for (let i = 0; i < t.length; i++) {
+            s += String.fromCharCode(t.charCodeAt(i) + (k.charCodeAt(i % k.length) % 17));
+        }
+        return btoa(s);
+    },
+    unmix: (t, k) => {
+        let r = atob(t), s = '';
+        for (let i = 0; i < r.length; i++) {
+            s += String.fromCharCode(r.charCodeAt(i) - (k.charCodeAt(i % k.length) % 17));
+        }
+        return s;
+    }
+};
+
+function encrypt() {
+    const p = document.getElementById('plain').value;
+    const k = document.getElementById('key').value;
+    const out = document.getElementById('encrypted');
+    
+    if (!p || !k) return alert('Input and Key required');
+    
+    const payload = R3A_Engine.mix(p, k);
+    const sum = R3A_Engine.hash(payload + k);
+    out.value = `R3A|v1|${sum}|${payload}`;
+}
+
+function decrypt() {
+    const c = document.getElementById('cipher').value;
+    const k = document.getElementById('dkey').value;
+    const out = document.getElementById('decrypted');
+    
+    try {
+        if (!c.startsWith('R3A|')) throw 0;
+        const [, v, sum, p] = c.split('|');
+        if (v !== 'v1' || R3A_Engine.hash(p + k) !== sum) throw 0;
+        out.value = R3A_Engine.unmix(p, k);
+    } catch {
+        alert('Decryption failed: Invalid data or key');
+    }
+}
+
+function safeCopy(id) {
+    const el = document.getElementById(id);
+    if (!el.value) return;
+    navigator.clipboard.writeText(el.value).then(() => {
+        const btn = event.target;
+        const originalText = btn.innerText;
+        btn.innerText = 'Copied!';
+        setTimeout(() => btn.innerText = originalText, 2000);
+    });
+}
+
+function downloadText() {
+    const val = document.getElementById('encrypted').value;
+    if (!val) return;
+    const b = new Blob([val], { type: 'text/plain' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(b);
+    a.download = 'secure_data.r3a';
+    a.click();
+}
+
+function checkStrength(v) {
+    const m = document.getElementById('strength');
+    m.className = 'meter';
+    if (!v) return;
+    if (v.length < 6 || /(.)\1{2,}/.test(v)) m.classList.add('weak');
+    else if (v.length < 10) m.classList.add('medium');
+    else m.classList.add('strong');
+}
+
+function startClock() {
+    setInterval(() => {
+        const t = new Date();
+        state.timer.textContent = t.toTimeString().split(' ')[0];
+    }, 1000);
+}
+
+window.addEventListener('load', () => {
+    startClock();
+    state.loader.style.opacity = '0';
+    setTimeout(() => state.loader.style.display = 'none', 400);
 });

@@ -28,5 +28,9 @@ Invalid signatures or mismatched checksums prevent decryption.
 ## Use Case
 Educational encryption demos, secure text experiments, or learning encryption protocol design.
 
+## Live Demo
+[View Live R3A Encryption Engine](https://yourusername.github.io/your-repo-name/)
+
+
 ## License
 MIT

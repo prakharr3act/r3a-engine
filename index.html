@@ -18,7 +18,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="R3A Secure Language Engine">
 <meta name="twitter:description" content="Local-first encryption engine with versioned signatures and integrity validation.">
-
+<link rel="icon" type="image/png" href="R3A.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -40,23 +40,84 @@
   </div>
 <!-- <button class="theme" onclick="toggleTheme()">Toggle Theme</button>--> 
   <footer>
-    <div class="footer-timer" id="footer-timer">00:00:00</div>
+    <div class="footer-timer" id="footer-timer">00:00:00 </div>
+    	v1.0.4
   </footer>
 </div>
 
 <div class="content">
   <button class="menu-btn ghost" onclick="toggleMenu()">☰ Menu</button>
 
-  <section id="home" class="section active">
-    <div class="hero">
-      <h1>R3A Secure Language Engine</h1>
-      <p>Local-only encrypted language runtime with integrity checks, versioned signatures, and tamper-proof data protection. Ideal for developers who need reliable encryption with simple key management.</p>
+<section id="home" class="section active">
+  <div class="hero">
+    <h1>R3A Secure Language Engine</h1>
+    <p class="lead">A high-performance, local-first cryptographic runtime designed for tamper-proof data handling and secure string manipulation.</p>
+    <br>
+    <div class="actions">
+      <button class="main" onclick="openTab('encrypt', document.querySelector('.nav button:nth-child(2)'))">Get Started</button>
+      <button class="ghost" onclick="openTab('docs', document.querySelector('.nav button:nth-child(4)'))">Read Docs</button>
     </div>
-  </section>
+  </div>
+
+  <div class="wiki-container">
+    <div class="wiki-main">
+      <div class="wiki-summary">
+        <p><strong>R3A</strong> (Reliable 3-layer Architecture) is an open-standard encryption engine that operates entirely within the client-side environment. By utilizing a <strong>Zero-Knowledge</strong> approach, R3A ensures that cryptographic keys and plaintext are never transmitted over the network, effectively neutralizing server-side vulnerabilities and data breaches.</p>
+      </div>
+
+      <div class="wiki-section-head">Technical Architecture</div>
+      <p>The engine follows a strict three-phase execution pipeline to ensure data integrity:</p>
+      
+      <div class="wiki-grid">
+        <div class="wiki-feature">
+          <h3>1. Shifting Layer</h3>
+          <p>Each character in the input string undergoes a modular shift based on the derived index of the secret key. This prevents simple frequency analysis attacks.</p>
+        </div>
+        <div class="wiki-feature">
+          <h3>2. Integrity Layer</h3>
+          <p>A 36-bit checksum is generated using a non-linear hashing algorithm. This checksum is appended to the payload to detect any manual tampering of the encrypted code.</p>
+        </div>
+        <div class="wiki-feature">
+          <h3>3. Protocol Layer</h3>
+          <p>Data is wrapped in a versioned R3A envelope. This allows the engine to maintain backward compatibility while upgrading security protocols in future versions.</p>
+        </div>
+        <div class="wiki-feature">
+          <h3>4. Local Persistence</h3>
+          <p>Designed for offline-first applications, R3A can be deployed in environments with zero internet connectivity while maintaining full cryptographic strength.</p>
+        </div>
+      </div>
+
+      <div class="wiki-section-head">Security Standards</div>
+      <p>R3A implements a defensive coding pattern to prevent common web-based attacks:</p>
+      <ul class="wiki-list">
+        <li><strong>Brute Force Mitigation:</strong> Built-in key strength meter encourages high-entropy secrets.</li>
+        <li><strong>XSS Protection:</strong> Output is sanitized and Base64 encoded to prevent script injection in stored data.</li>
+        <li><strong>Memory Safety:</strong> Variables are cleared after execution to minimize the risk of memory heap snapshots.</li>
+      </ul>
+    </div>
+
+    <aside class="wiki-infobox">
+      <div class="info-header">System Specification</div>
+      <img src="R3A.png" alt="R3A Logo" class="info-img">
+      <table class="info-table">
+        <tr><th>Language</th><td>JavaScript / ES6</td></tr>
+        <tr><th>Encryption</th><td>Dynamic Shift</td></tr>
+        <tr><th>Integrity</th><td>Checksum (Base36)</td></tr>
+        <tr><th>Version</th><td>	v1.0.4</td></tr>
+         <tr><th>Software</th><td>R3A Engine</td></tr>
+        <tr><th>Security</th><td>3-Layer Auth</td></tr>
+        <tr><th>Developer</th><td>Prakhar Patel</td></tr>
+        <tr><th>License</th><td>Standard Developer</td></tr>
+      </table>
+      <div class="info-tag">SECURE RUNTIME</div>
+    </aside>
+  </div>
+</section>
 
   <section id="encrypt" class="section">
     <div class="card">
       <h2>Encrypt Your Text</h2>
+      <br>
       <div class="grid">
         <div>
           <textarea id="plain" placeholder="Enter text here..."></textarea>
@@ -78,86 +139,189 @@
   <section id="decrypt" class="section">
     <div class="card">
       <h2>Decrypt Your Text</h2>
+      <br>
       <textarea id="cipher" placeholder="R3A Code"></textarea>
       <input id="dkey" placeholder="Secret Key">
       <div class="actions">
-        <button class="main" onclick="decrypt()">Decrypt</button>
-        <button class="ghost" onclick="safeCopy('decrypted')">Copy</button>
+        <button class="main" onclick="decrypt()" style="margin-bottom: 15px;" >Decrypt</button>
+        <button class="ghost" onclick="safeCopy('decrypted')" style="margin-bottom: 15px;">Copy</button>
       </div>
       <textarea id="decrypted" placeholder="Plain Text"></textarea>
     </div>
   </section>
 
-  <section id="docs" class="section">
-    <div class="card">
-      <h1>R3A Documentation</h1>
-      <p style="color:var(--muted)">Learn how R3A engine works internally.</p>
+ <section id="docs" class="section">
+  <div class="card">
+    <h1>R3A Documentation</h1>
+    <p style="color:var(--muted)">Learn how R3A engine works internally.</p>
 
-      <div class="block">
-        <h2>1. Protocol Format</h2>
-        <p>Versioned structure ensures valid decryption and prevents tampering.</p>
-        <pre style="background:var(--code1)"><code>R3A|v1|checksum|payload</code></pre>
-        <p>R3A = signature, v1 = version, checksum = integrity, payload = Base64 encrypted.</p>
-      </div>
+    <div class="block">
+      <h2>1. Protocol Format</h2>
+      <p>Versioned structure ensures valid decryption and prevents tampering.</p>
 
-      <div class="block">
-        <h2>2. Hash Function</h2>
-        <p>Generates a hash for key derivation and integrity check.</p>
-        <pre style="background:var(--code2)"><code>function hash(str){
-  let h = 0;
-  for(let i=0;i<str.length;i++){
-    h = (h << 5) - h + str.charCodeAt(i);
+      <pre style="background:#0f0f0f;color:#e6e6e6;border:1px solid #222;padding:14px;border-radius:6px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;line-height:1.5;">
+<code style="color:#e6e6e6;white-space:pre;">
+<span style="color:#4fc3f7;">R3A</span><span style="color:#999;">|</span><span style="color:#81c784;">v1</span><span style="color:#999;">|</span><span style="color:#ffb74d;">checksum</span><span style="color:#999;">|</span><span style="color:#ce93d8;">payload</span>
+</code>
+      </pre>
+
+      <p>R3A = signature, v1 = version, checksum = integrity, payload = Base64 encrypted.</p>
+    </div>
+
+    <div class="block">
+      <h2>2. Hash Function</h2>
+      <p>Generates a hash for key derivation and integrity check.</p>
+
+      <pre style="background:#0f0f0f;color:#e6e6e6;border:1px solid #222;padding:14px;border-radius:6px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;line-height:1.5;">
+<code style="color:#e6e6e6;white-space:pre;">
+<span style="color:#c792ea;">function</span> <span style="color:#82aaff;">hash</span>(str){
+  <span style="color:#c792ea;">let</span> h <span style="color:#89ddff;">=</span> <span style="color:#f78c6c;">0</span>;
+  <span style="color:#c792ea;">for</span>(<span style="color:#c792ea;">let</span> i<span style="color:#89ddff;">=</span><span style="color:#f78c6c;">0</span>; i<span style="color:#89ddff;">&lt;</span>str.length; i++){
+    h <span style="color:#89ddff;">=</span> (h <span style="color:#89ddff;">&lt;&lt;</span> <span style="color:#f78c6c;">5</span>) <span style="color:#89ddff;">-</span> h <span style="color:#89ddff;">+</span> str.<span style="color:#82aaff;">charCodeAt</span>(i);
   }
-  return Math.abs(h).toString(36);
-}</code></pre>
-      </div>
+  <span style="color:#c792ea;">return</span> Math.<span style="color:#82aaff;">abs</span>(h).<span style="color:#82aaff;">toString</span>(<span style="color:#f78c6c;">36</span>);
+}
+</code>
+      </pre>
+    </div>
 
-      <div class="block">
-        <h2>3. Encryption Logic</h2>
-        <p>Shifts each character with the secret key and Base64 encodes.</p>
-        <pre style="background:var(--code3)"><code>function mix(text,key){
-  let r = '';
-  for(let i=0;i<text.length;i++){
-    r += String.fromCharCode(text.charCodeAt(i) + (key.charCodeAt(i % key.length) % 17));
+    <div class="block">
+      <h2>3. Encryption Logic</h2>
+      <p>Shifts each character with the secret key and Base64 encodes.</p>
+
+      <pre style="background:#0f0f0f;color:#e6e6e6;border:1px solid #222;padding:14px;border-radius:6px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;line-height:1.5;">
+<code style="color:#e6e6e6;white-space:pre;">
+<span style="color:#c792ea;">function</span> <span style="color:#82aaff;">mix</span>(text, key){
+  <span style="color:#c792ea;">let</span> r <span style="color:#89ddff;">=</span> <span style="color:#ecc48d;">''</span>;
+  <span style="color:#c792ea;">for</span>(<span style="color:#c792ea;">let</span> i<span style="color:#89ddff;">=</span><span style="color:#f78c6c;">0</span>; i<span style="color:#89ddff;">&lt;</span>text.length; i++){
+    r <span style="color:#89ddff;">+=</span> String.<span style="color:#82aaff;">fromCharCode</span>(
+      text.<span style="color:#82aaff;">charCodeAt</span>(i) <span style="color:#89ddff;">+</span>
+      (key.<span style="color:#82aaff;">charCodeAt</span>(i <span style="color:#89ddff;">%</span> key.length) <span style="color:#89ddff;">%</span> <span style="color:#f78c6c;">17</span>)
+    );
   }
-  return btoa(r);
-}</code></pre>
-      </div>
+  <span style="color:#c792ea;">return</span> <span style="color:#82aaff;">btoa</span>(r);
+}
+</code>
+      </pre>
+    </div>
 
-      <div class="block">
-        <h2>4. Decryption Logic</h2>
-        <p>Reverse encryption; validates signature and checksum.</p>
-        <pre style="background:var(--code2)"><code>function unmix(data,key){
-  let d = atob(data), r = '';
-  for(let i=0;i<d.length;i++){
-    r += String.fromCharCode(d.charCodeAt(i) - (key.charCodeAt(i % key.length) % 17));
+    <div class="block">
+      <h2>4. Decryption Logic</h2>
+
+      <pre style="background:#0f0f0f;color:#e6e6e6;border:1px solid #222;padding:14px;border-radius:6px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;line-height:1.5;">
+<code style="color:#e6e6e6;white-space:pre;">
+<span style="color:#c792ea;">function</span> <span style="color:#82aaff;">unmix</span>(data, key){
+  <span style="color:#c792ea;">let</span> d <span style="color:#89ddff;">=</span> <span style="color:#82aaff;">atob</span>(data),
+      r <span style="color:#89ddff;">=</span> <span style="color:#ecc48d;">''</span>;
+  <span style="color:#c792ea;">for</span>(<span style="color:#c792ea;">let</span> i<span style="color:#89ddff;">=</span><span style="color:#f78c6c;">0</span>; i<span style="color:#89ddff;">&lt;</span>d.length; i++){
+    r <span style="color:#89ddff;">+=</span> String.<span style="color:#82aaff;">fromCharCode</span>(
+      d.<span style="color:#82aaff;">charCodeAt</span>(i) <span style="color:#89ddff;">-</span>
+      (key.<span style="color:#82aaff;">charCodeAt</span>(i <span style="color:#89ddff;">%</span> key.length) <span style="color:#89ddff;">%</span> <span style="color:#f78c6c;">17</span>)
+    );
   }
-  return r;
-}</code></pre>
-      </div>
+  <span style="color:#c792ea;">return</span> r;
+}
+</code>
+      </pre>
+    </div>
 
-      <div class="block">
-        <h2>5. Signature & Tamper Protection</h2>
-        <pre style="background:var(--code1)"><code>if(!cipher.startsWith('R3A|')) throw Error();
-if(hash(payload+key) !== checksum) throw Error();</code></pre>
-      </div>
+    <div class="block">
+      <h2>5. Signature & Tamper Protection</h2>
 
-      <div class="block">
-        <h2>6. Key Strength Detection</h2>
-        <pre style="background:var(--code3)"><code>if(key.length < 6 || /(.)\1{2,}/.test(key)) strength='weak';
-else if(key.length < 10) strength='medium';
-else strength='strong';</code></pre>
+      <pre style="background:#0f0f0f;color:#e6e6e6;border:1px solid #222;padding:14px;border-radius:6px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;line-height:1.5;">
+<code style="color:#e6e6e6;white-space:pre;">
+<span style="color:#c792ea;">if</span>(<span style="color:#89ddff;">!</span>cipher.<span style="color:#82aaff;">startsWith</span>(<span style="color:#ecc48d;">'R3A|'</span>))
+  <span style="color:#c792ea;">throw</span> <span style="color:#ff5370;">Error</span>();
+
+<span style="color:#c792ea;">if</span>(<span style="color:#82aaff;">hash</span>(payload <span style="color:#89ddff;">+</span> key) <span style="color:#89ddff;">!==</span> checksum)
+  <span style="color:#c792ea;">throw</span> <span style="color:#ff5370;">Error</span>();
+</code>
+      </pre>
+    </div>
+
+    <div class="block">
+      <h2>6. Key Strength Detection</h2>
+
+      <pre style="background:#0f0f0f;color:#e6e6e6;border:1px solid #222;padding:14px;border-radius:6px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;line-height:1.5;">
+<code style="color:#e6e6e6;white-space:pre;">
+<span style="color:#c792ea;">if</span>(key.length <span style="color:#89ddff;">&lt;</span> <span style="color:#f78c6c;">6</span> <span style="color:#89ddff;">||</span> <span style="color:#ecc48d;">/(.)\1{2,}/</span>.<span style="color:#82aaff;">test</span>(key))
+  strength <span style="color:#89ddff;">=</span> <span style="color:#ff5370;">'weak'</span>;
+<span style="color:#c792ea;">else if</span>(key.length <span style="color:#89ddff;">&lt;</span> <span style="color:#f78c6c;">10</span>)
+  strength <span style="color:#89ddff;">=</span> <span style="color:#ffb74d;">'medium'</span>;
+<span style="color:#c792ea;">else</span>
+  strength <span style="color:#89ddff;">=</span> <span style="color:#81c784;">'strong'</span>;
+</code>
+      </pre>
+    </div>
+
+  </div>
+</section>
+
+<section id="about" class="section">
+  <div class="hero">
+    <h1>The R3ACT Ecosystem </h1>
+    <p class="lead">A deep dive into the architecture of R3A and the visionary organization driving local-first privacy standards.</p>
+  </div>
+
+  <div class="wiki-container">
+    <div class="wiki-main">
+      
+      <div class="wiki-section-head">R3ACT: The Parent Entity</div>
+   <p><strong>R3ACT</strong> is a personal tech project and learning collective I started to explore how privacy-focused software can be built from the ground up. I’m still learning full-stack development, backend systems, and cybersecurity, but R3ACT is where I experiment, break things, and rebuild them better. The core idea behind it is simple: data should stay with the user, not be silently shipped off to servers.</p>
+
+<p>Most of the projects under R3ACT are experimental by design. I work mainly on Linux (Kali Linux) and focus on understanding how systems behave at a low level—encryption, file formats, runtime logic, and security boundaries. Instead of relying heavily on third-party services, I try to build things locally to understand how they actually work.</p>
+
+<div class="wiki-section-head">R3A Engine</div>
+
+<p>The <strong>R3A Engine</strong> is my main cryptography experiment and the core project under R3ACT. It’s a layered encryption runtime designed to be simple, portable, and dependency-free. The engine uses a versioned signature format (<strong>R3A|v1</strong>) so the encryption logic can evolve over time without breaking older encrypted data.</p>
+
+<p>Internally, the engine combines a custom character-shifting algorithm with a Base36 checksum system. This allows the engine to detect even tiny changes in encrypted data. If the data is altered, the signature fails validation, and the engine immediately rejects it. The goal isn’t to replace professional cryptography standards, but to deeply understand how encryption systems are designed and validated.</p>
+
+<div class="wiki-section-head">Founder</div>
+
+<p><strong>Prakhar Patel</strong> is a student developer with a strong interest in frontend, backend, and cybersecurity. At 15 years old, he actively experiments with encryption systems, Linux environments, and security-focused tooling to learn how real-world software is built and protected.</p>
+
+<p>He is also the creator of <strong>Zippr</strong>, a password randomizer project built as part of his journey into secure software design. Prakhar maintains and develops the R3A Engine as a hands-on learning project, with the long-term goal of building tools that respect user privacy while remaining understandable to developers who are still learning—just like him.</p>
+
+      <div class="wiki-grid">
+        <div class="wiki-feature">
+          <h3>The R3ACT Manifesto</h3>
+          <p>We believe that privacy is not a feature; it is a foundational human right. Our tools are designed to be invisible, invincible, and entirely local.</p>
+        </div>
+        <div class="wiki-feature">
+          <h3>Future Roadmap</h3>
+          <p>Expansion into mobile-native runtimes and hardware-accelerated encryption modules is currently underway for the 2026 cycle.</p>
+        </div>
       </div>
     </div>
-  </section>
 
-  <section id="about" class="section">
-    <div class="card">
-      <h1>About R3A</h1>
-      <p>R3A is a lightweight encryption engine designed to secure text locally. It uses a simple shift cipher combined with Base64 encoding and versioned signatures to prevent tampering.</p>  
-    </div>
-  </section>
+    <aside class="wiki-infobox">
+      <div class="info-header">Organization Details</div>
+      <img src="r3act.png" alt="R3ACT Official Logo" class="info-img" style="background-color: black;">
+      <table class="info-table">
+        <tr><th>Entity</th><td>R3ACT</td></tr>
+        <tr><th>Type</th><td>Innovation Lab</td></tr>
+        <tr><th>Focus</th><td>Zero-Trust Security</td></tr>
+      </table>
 
+      <div class="info-header" style="margin-top:20px">Founder Profile</div>
+      <img src="prakhar_pfp.jpg" alt="Prakhar Patel" class="info-img">
+      <table class="info-table">
+        <tr><th>Founder</th><td>Prakhar Patel</td></tr>
+        <tr><th>Role</th><td>Lead Architect</td></tr>
+        <tr><th>Status</th><td>Active</td></tr>
+      </table>
+      
+      <div class="info-header" style="margin-top:20px">Engine Specs</div>
+      <img src="R3A.png" alt="R3A Engine Logo" class="info-img">
+      <table class="info-table">
+        <tr><th>Software</th><td>R3A Engine</td></tr>
+        <tr><th>Version</th><td>v1.0.4</td></tr>
+        <tr><th>Security</th><td>3-Layer Auth</td></tr>
+      </table>
+    </aside>
+  </div>
+</section>
 </div>
 
 <script src="script.js"></script>
